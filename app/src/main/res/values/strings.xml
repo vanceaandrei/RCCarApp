@@ -16,4 +16,5 @@
     <string name="btn_backward">Backrward</string>
     <string name="btn_left">Left</string>
     <string name="btn_right">Right</string>
+    <string name="btn_rc_controller">RC Controller</string>
 </resources>
