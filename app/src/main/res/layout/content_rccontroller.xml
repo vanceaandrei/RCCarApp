@@ -23,17 +23,7 @@
         android:elevation="4dp"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
-        app:srcCompat="@drawable/UP" />
-
-    <ImageView
-        android:id="@+id/image_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|right"
-        android:elevation="4dp"
-        android:padding="50dp"
-        android:stateListAnimator="@animator/press"
-        app:srcCompat="@drawable/RIGHT" />
+        app:srcCompat="@drawable/up" />
 
     <ImageView
         android:id="@+id/image_left"
@@ -43,7 +33,7 @@
         android:elevation="4dp"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
-        app:srcCompat="@drawable/LEFT" />
+        app:srcCompat="@drawable/left" />
 
     <ImageView
         android:id="@+id/image_backward"
@@ -53,6 +43,16 @@
         android:elevation="4dp"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
-        app:srcCompat="@drawable/DOWN" />
+        app:srcCompat="@drawable/down" />
+
+    <ImageView
+        android:id="@+id/image_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|right"
+        android:elevation="4dp"
+        android:padding="50dp"
+        android:stateListAnimator="@animator/press"
+        app:srcCompat="@drawable/right" />
 
 </FrameLayout>

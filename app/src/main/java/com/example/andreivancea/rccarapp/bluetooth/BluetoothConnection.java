@@ -42,11 +42,11 @@ public class BluetoothConnection {
     private final Handler mHandler;
 
     // statuses for Handler
-    private final static int BL_NOT_AVAILABLE = 1;
-    private final static int BL_INCORRECT_ADDRESS = 2;
-    private final static int BL_REQUEST_ENABLE = 3;
-    private final static int BL_SOCKET_FAILED = 4;
-    private final static int RECIEVE_MESSAGE = 5;
+    public final static int BL_NOT_AVAILABLE = 1;
+    public final static int BL_INCORRECT_ADDRESS = 2;
+    public final static int BL_REQUEST_ENABLE = 3;
+    public final static int BL_SOCKET_FAILED = 4;
+    public final static int RECIEVE_MESSAGE = 5;
 
     private static int reconnectionCount = 0;
 

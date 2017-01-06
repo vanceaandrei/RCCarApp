@@ -12,10 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.andreivancea.rccarapp.bluetooth.BluetoothConnection;
 import com.example.andreivancea.rccarapp.exception.ConnectionException;
