@@ -95,7 +95,7 @@ public class RCControllerActivity extends AppCompatActivity {
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     try {
-                        bl.sendData(MESSAGE_STOP);
+                        bl.sendData(MESSAGE_STOP + MESSAGE_FORWARD);
                     } catch (ConnectionException e) {
                         handleConnectionException(e.getMessage());
                     }
@@ -114,7 +114,7 @@ public class RCControllerActivity extends AppCompatActivity {
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     try {
-                        bl.sendData(MESSAGE_STOP);
+                        bl.sendData(MESSAGE_STOP + MESSAGE_LEFT);
                     } catch (ConnectionException e) {
                         handleConnectionException(e.getMessage());
                     }
@@ -133,7 +133,7 @@ public class RCControllerActivity extends AppCompatActivity {
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     try {
-                        bl.sendData(MESSAGE_STOP);
+                        bl.sendData(MESSAGE_STOP + MESSAGE_RIGHT);
                     } catch (ConnectionException e) {
                         handleConnectionException(e.getMessage());
                     }
@@ -152,7 +152,7 @@ public class RCControllerActivity extends AppCompatActivity {
                     }
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     try {
-                        bl.sendData(MESSAGE_STOP);
+                        bl.sendData(MESSAGE_STOP + MESSAGE_BACKWARD);
                     } catch (ConnectionException e) {
                         handleConnectionException(e.getMessage());
                     }
