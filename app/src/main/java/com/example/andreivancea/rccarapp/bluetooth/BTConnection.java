@@ -88,6 +88,15 @@ public class BTConnection {
         }
     }
 
+    public void destroy() {
+        connection = null;
+        try {
+            btSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Could not close socket!");
+        }
+    }
+
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) {
         try {
             return device.createRfcommSocketToServiceRecord(MY_UUID);

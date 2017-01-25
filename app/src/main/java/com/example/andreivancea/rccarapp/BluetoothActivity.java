@@ -40,22 +40,11 @@ public class BluetoothActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         //enable bluetooth
         enableBluetooth();
 
-        setResult(Activity.RESULT_CANCELED);
-        ArrayAdapter<String> pairedDevicesArrayAdapter =
-                new ArrayAdapter<String>(this, R.layout.message);
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
+//        setResult(Activity.RESULT_CANCELED);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.message);
         Set<BluetoothDevice> deviceSet = mBluetoothAdapter.getBondedDevices();
         devices = new HashMap<>();
         for (BluetoothDevice device : deviceSet) {
@@ -86,9 +75,13 @@ public class BluetoothActivity extends AppCompatActivity {
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = devices.get(info);
-            Intent in = new Intent(getApplicationContext(), RCControllerActivity.class);
-            in.putExtra("address", address);
-            startActivity(in);
+            if (BluetoothAdapter.checkBluetoothAddress(address)) {
+                Intent in = new Intent(getApplicationContext(), RCControllerActivity.class);
+                in.putExtra("address", address);
+                startActivity(in);
+            } else {
+                Toast.makeText(getApplicationContext(), "Incorrect Bluetooth address!", Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -115,7 +108,6 @@ public class BluetoothActivity extends AppCompatActivity {
                     mNewDevicesArrayAdapter.add(noDevices);
                 }
             }
-
         }
     };
 

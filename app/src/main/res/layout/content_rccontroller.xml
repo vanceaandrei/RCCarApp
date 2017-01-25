@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center"
-        android:elevation="4dp"
+        android:elevation="@dimen/cardview_default_elevation"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
         app:srcCompat="@drawable/up" />
@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|left"
-        android:elevation="4dp"
+        android:elevation="@dimen/cardview_default_elevation"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
         app:srcCompat="@drawable/left" />
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:elevation="4dp"
+        android:elevation="@dimen/cardview_default_elevation"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
         app:srcCompat="@drawable/down" />
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|right"
-        android:elevation="4dp"
+        android:elevation="@dimen/cardview_default_elevation"
         android:padding="50dp"
         android:stateListAnimator="@animator/press"
         app:srcCompat="@drawable/right" />

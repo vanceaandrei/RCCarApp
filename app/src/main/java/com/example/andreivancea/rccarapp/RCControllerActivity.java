@@ -1,9 +1,13 @@
 package com.example.andreivancea.rccarapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,7 +23,7 @@ import com.example.andreivancea.rccarapp.bluetooth.BTConnection;
 import com.example.andreivancea.rccarapp.exception.ConnectionException;
 import com.example.andreivancea.rccarapp.handlers.MyHandler;
 
-public class RCControllerActivity extends AppCompatActivity {
+public class RCControllerActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "RCControllerActivity";
 
@@ -28,6 +32,9 @@ public class RCControllerActivity extends AppCompatActivity {
     private static final String MESSAGE_RIGHT = "R";
     private static final String MESSAGE_BACKWARD = "B";
     private static final String MESSAGE_STOP = "S";
+
+    private static final int SENSOR_THRESHOLD = 3;
+
     private BTConnection bl = null;
     private final MyHandler mHandler = new MyHandler(this);
 
@@ -38,6 +45,12 @@ public class RCControllerActivity extends AppCompatActivity {
     private ImageView right;
     private ImageView backward;
 
+    private FloatingActionButton fab;
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor = null;
+    private boolean sensorControl = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +59,17 @@ public class RCControllerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Activate sensors control
+                if (!sensorControl) {
+                    activateSensorControl();
+                } else {
+                    deactivateSensorControl();
+                }
+
             }
         });
 
@@ -70,7 +88,7 @@ public class RCControllerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        bl.pause();
+        bl.destroy();
         super.onDestroy();
     }
 
@@ -78,12 +96,18 @@ public class RCControllerActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         bl.pause();
+        if (sensorControl) {
+            mSensorManager.unregisterListener(this);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         bl.connectTo(address);
+        if (sensorControl) {
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     private void setupImageViewListeners() {
@@ -139,6 +163,27 @@ public class RCControllerActivity extends AppCompatActivity {
 
     }
 
+    private void activateSensorControl() {
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if ((mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)) == null) {
+            Toast.makeText(this, "Accelerometer not available!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Sensor control activated!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Sensor control activated!");
+            //change fab icon
+            fab.setImageDrawable(getResources().getDrawable(android.R.drawable.star_big_on, this.getApplicationContext().getTheme()));
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorControl = true;
+        }
+    }
+
+    private void deactivateSensorControl() {
+        fab.setImageDrawable(getResources().getDrawable(android.R.drawable.star_big_off, this.getApplicationContext().getTheme()));
+        mSensorManager.unregisterListener(this);
+        sensorControl = false;
+    }
+
     private void handleConnectionException(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         finish();
@@ -164,6 +209,54 @@ public class RCControllerActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    String lastAction;
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (sensorControl) {
+            float x = event.values[0]; //x
+            float y = event.values[1]; //y
+
+            String messageToSend = "";
+
+            if (Math.abs(y) > SENSOR_THRESHOLD) {
+                if (y < 0) {
+                    //forward
+                    messageToSend += MESSAGE_FORWARD;
+                } else {
+                    //backward
+                    messageToSend += MESSAGE_BACKWARD;
+                }
+            }
+
+            if (Math.abs(x) > SENSOR_THRESHOLD) {
+                if (x < 0) {
+                    //right
+                    messageToSend += MESSAGE_RIGHT;
+                } else {
+                    //left
+                    messageToSend += MESSAGE_LEFT;
+                }
+            }
+
+            if (!lastAction.equals(messageToSend)) {
+                bl.sendData(messageToSend);
+                lastAction = messageToSend;
+                Log.d(TAG, "Sending: " + messageToSend);
+            }
+            if (messageToSend.equals("")) {
+                bl.sendData(MESSAGE_STOP);
+                lastAction = messageToSend;
+                Log.d(TAG, "Sending: STOP");
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
 
