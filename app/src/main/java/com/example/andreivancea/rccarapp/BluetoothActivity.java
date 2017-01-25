@@ -22,11 +22,16 @@ import android.widget.Toast;
 
 import com.example.andreivancea.rccarapp.util.Const;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class BluetoothActivity extends AppCompatActivity {
 
     private static final String TAG = "BluetoothActivity";
     BluetoothAdapter mBluetoothAdapter;
     private ArrayAdapter<String> mNewDevicesArrayAdapter;
+    Map<String, String> devices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +56,12 @@ public class BluetoothActivity extends AppCompatActivity {
         ArrayAdapter<String> pairedDevicesArrayAdapter =
                 new ArrayAdapter<String>(this, R.layout.message);
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.message);
-
-
+        Set<BluetoothDevice> deviceSet = mBluetoothAdapter.getBondedDevices();
+        devices = new HashMap<>();
+        for (BluetoothDevice device : deviceSet) {
+            devices.put(device.getName(), device.getAddress());
+        }
+        mNewDevicesArrayAdapter.addAll(devices.keySet());
         ListView pairedListView = (ListView) findViewById(R.id.list_paired);
         pairedListView.setAdapter(mNewDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
@@ -76,7 +85,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
-            String address = info.substring(info.length() - 17);
+            String address = devices.get(info);
             Intent in = new Intent(getApplicationContext(), RCControllerActivity.class);
             in.putExtra("address", address);
             startActivity(in);
