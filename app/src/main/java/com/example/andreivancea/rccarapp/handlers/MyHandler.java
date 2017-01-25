@@ -8,7 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.andreivancea.rccarapp.RCControllerActivity;
-import com.example.andreivancea.rccarapp.bluetooth.BluetoothConnection;
+import com.example.andreivancea.rccarapp.bluetooth.BTConnection;
+import com.example.andreivancea.rccarapp.util.MessageConstants;
 
 import java.lang.ref.WeakReference;
 
@@ -20,7 +21,7 @@ public class MyHandler extends Handler {
     private final WeakReference<RCControllerActivity> mActivity;
 
     public MyHandler(RCControllerActivity activity) {
-        mActivity = new WeakReference<RCControllerActivity>(activity);
+        mActivity = new WeakReference<>(activity);
     }
 
     @Override
@@ -28,23 +29,25 @@ public class MyHandler extends Handler {
         RCControllerActivity activity = mActivity.get();
         if (activity != null) {
             switch (msg.what) {
-                case BluetoothConnection.BL_NOT_AVAILABLE:
-                    Log.d(BluetoothConnection.TAG, "Bluetooth is not available. Exit");
+                case MessageConstants.BL_NOT_AVAILABLE:
+                    Log.d(BTConnection.TAG, "Bluetooth is not available. Exit");
                     Toast.makeText(activity.getBaseContext(), "Bluetooth is not available", Toast.LENGTH_SHORT).show();
                     activity.finish();
                     break;
-                case BluetoothConnection.BL_INCORRECT_ADDRESS:
-                    Log.d(BluetoothConnection.TAG, "Incorrect MAC address");
+                case MessageConstants.BL_INCORRECT_ADDRESS:
+                    Log.d(BTConnection.TAG, "Incorrect MAC address");
                     Toast.makeText(activity.getBaseContext(), "Incorrect Bluetooth address", Toast.LENGTH_SHORT).show();
                     break;
-                case BluetoothConnection.BL_REQUEST_ENABLE:
-                    Log.d(BluetoothConnection.TAG, "Request Bluetooth Enable");
-                    BluetoothAdapter.getDefaultAdapter();
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    activity.startActivityForResult(enableBtIntent, 1);
-                    break;
-                case BluetoothConnection.BL_SOCKET_FAILED:
+                case MessageConstants.BL_SOCKET_FAILED:
                     Toast.makeText(activity.getBaseContext(), "Socket failed", Toast.LENGTH_SHORT).show();
+                    //activity.finish();
+                    break;
+//                case MessageConstants.MESSAGE_WRITE:
+//                    Toast.makeText(activity.getBaseContext(), "Socket failed", Toast.LENGTH_SHORT).show();
+//                    //activity.finish();
+//                    break;
+                case MessageConstants.MESSAGE_TOAST:
+                    Toast.makeText(activity.getBaseContext(), msg.getData().getString("toast"), Toast.LENGTH_SHORT).show();
                     //activity.finish();
                     break;
             }

@@ -6,26 +6,29 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.example.andreivancea.rccarapp.bluetooth.BluetoothConnection;
+import com.example.andreivancea.rccarapp.bluetooth.BTConnection;
 import com.example.andreivancea.rccarapp.exception.ConnectionException;
 import com.example.andreivancea.rccarapp.handlers.MyHandler;
 
 public class RCControllerActivity extends AppCompatActivity {
+
+    private static final String TAG = "RCControllerActivity";
 
     private static final String MESSAGE_FORWARD = "F";
     private static final String MESSAGE_LEFT = "L";
     private static final String MESSAGE_RIGHT = "R";
     private static final String MESSAGE_BACKWARD = "B";
     private static final String MESSAGE_STOP = "S";
-    private BluetoothConnection bl = null;
+    private BTConnection bl = null;
     private final MyHandler mHandler = new MyHandler(this);
 
     String address;
@@ -57,25 +60,30 @@ public class RCControllerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         address = intent.getStringExtra("address");
 
-        bl = new BluetoothConnection(this, mHandler);
+        try {
+            bl = new BTConnection(mHandler);
+        } catch (ConnectionException e) {
+            Log.e(TAG, e.getMessage());
+            handleConnectionException(e.getMessage());
+        }
     }
 
     @Override
     protected void onDestroy() {
-        bl.BT_onPause();
+        bl.pause();
         super.onDestroy();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        bl.BT_onPause();
+        bl.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        bl.BT_Connect(address, false);
+        bl.connectTo(address);
     }
 
     private void setupImageViewListeners() {
@@ -88,17 +96,9 @@ public class RCControllerActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    try {
-                        bl.sendData(MESSAGE_FORWARD);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_FORWARD);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    try {
-                        bl.sendData(MESSAGE_STOP + MESSAGE_FORWARD);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_STOP + MESSAGE_FORWARD);
                 }
                 return false;
             }
@@ -107,17 +107,9 @@ public class RCControllerActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    try {
-                        bl.sendData(MESSAGE_LEFT);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_LEFT);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    try {
-                        bl.sendData(MESSAGE_STOP + MESSAGE_LEFT);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_STOP + MESSAGE_LEFT);
                 }
                 return false;
             }
@@ -126,17 +118,9 @@ public class RCControllerActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    try {
-                        bl.sendData(MESSAGE_RIGHT);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_RIGHT);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    try {
-                        bl.sendData(MESSAGE_STOP + MESSAGE_RIGHT);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_STOP + MESSAGE_RIGHT);
                 }
                 return false;
             }
@@ -145,17 +129,9 @@ public class RCControllerActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    try {
-                        bl.sendData(MESSAGE_BACKWARD);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_BACKWARD);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    try {
-                        bl.sendData(MESSAGE_STOP + MESSAGE_BACKWARD);
-                    } catch (ConnectionException e) {
-                        handleConnectionException(e.getMessage());
-                    }
+                    bl.sendData(MESSAGE_STOP + MESSAGE_BACKWARD);
                 }
                 return false;
             }
@@ -164,10 +140,8 @@ public class RCControllerActivity extends AppCompatActivity {
     }
 
     private void handleConnectionException(String message) {
-        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
-                .findViewById(R.id.content_rccontroller)).getChildAt(0);
-        Snackbar.make(viewGroup.getRootView(), message, Snackbar.LENGTH_SHORT).show();
-        //finish();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
