@@ -55,4 +55,10 @@
         android:stateListAnimator="@animator/press"
         app:srcCompat="@drawable/right" />
 
+    <Button
+        android:text="@string/btn_retry_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonReconnect" />
+
 </FrameLayout>

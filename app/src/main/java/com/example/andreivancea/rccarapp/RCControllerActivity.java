@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,6 +46,8 @@ public class RCControllerActivity extends AppCompatActivity implements SensorEve
     private ImageView right;
     private ImageView backward;
 
+    private Button retryConnectionBtn;
+
     private FloatingActionButton fab;
 
     private SensorManager mSensorManager;
@@ -72,6 +75,15 @@ public class RCControllerActivity extends AppCompatActivity implements SensorEve
 
             }
         });
+
+        retryConnectionBtn = (Button) findViewById(R.id.buttonReconnect);
+        retryConnectionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bl.connectTo(address);
+            }
+        });
+
 
         setupImageViewListeners();
 
@@ -182,6 +194,8 @@ public class RCControllerActivity extends AppCompatActivity implements SensorEve
         fab.setImageDrawable(getResources().getDrawable(android.R.drawable.star_big_off, this.getApplicationContext().getTheme()));
         mSensorManager.unregisterListener(this);
         sensorControl = false;
+        Toast.makeText(this, "Sensor control deactivated!", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Sensor control deactivated!");
     }
 
     private void handleConnectionException(String message) {
@@ -241,12 +255,12 @@ public class RCControllerActivity extends AppCompatActivity implements SensorEve
                 }
             }
 
-            if (!lastAction.equals(messageToSend)) {
+            if (!messageToSend.equals(lastAction)) {
                 bl.sendData(messageToSend);
                 lastAction = messageToSend;
                 Log.d(TAG, "Sending: " + messageToSend);
             }
-            if (messageToSend.equals("")) {
+            if (messageToSend.equals("") && !messageToSend.equals(lastAction)) {
                 bl.sendData(MESSAGE_STOP);
                 lastAction = messageToSend;
                 Log.d(TAG, "Sending: STOP");
