@@ -42,10 +42,10 @@ public class MyHandler extends Handler {
                     Toast.makeText(activity.getBaseContext(), "Socket failed", Toast.LENGTH_SHORT).show();
                     //activity.finish();
                     break;
-//                case MessageConstants.MESSAGE_WRITE:
-//                    Toast.makeText(activity.getBaseContext(), "Socket failed", Toast.LENGTH_SHORT).show();
-//                    //activity.finish();
-//                    break;
+                case MessageConstants.BL_CONNECTED:
+                    Toast.makeText(activity.getBaseContext(), "Connected to " + msg.getData().getString("toast"), Toast.LENGTH_SHORT).show();
+                    //activity.finish();
+                    break;
                 case MessageConstants.MESSAGE_TOAST:
                     Toast.makeText(activity.getBaseContext(), msg.getData().getString("toast"), Toast.LENGTH_SHORT).show();
                     //activity.finish();

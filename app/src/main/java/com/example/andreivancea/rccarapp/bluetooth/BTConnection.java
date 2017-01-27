@@ -65,6 +65,9 @@ public class BTConnection {
         try {
             btSocket.connect();
             Log.d(TAG, "Connected to " + device.getName());
+            Message writtenMsg = mHandler.obtainMessage(
+                    MessageConstants.MESSAGE_TOAST, -1, -1, device.getName());
+            writtenMsg.sendToTarget();
             connected = true;
             connection = new ConnectedThread(btSocket);
 

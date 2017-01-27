@@ -11,4 +11,5 @@ public class MessageConstants {
     public final static int BL_NOT_AVAILABLE = 1;
     public final static int BL_INCORRECT_ADDRESS = 2;
     public final static int BL_SOCKET_FAILED = 4;
+    public static final int BL_CONNECTED = 3;
 }
